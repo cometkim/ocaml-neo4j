@@ -1,0 +1,3 @@
+(library
+ (name neo4j)
+ (public_name neo4j))

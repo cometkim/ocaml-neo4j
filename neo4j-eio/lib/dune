@@ -1,0 +1,6 @@
+(library
+ (name neo4j_eio)
+ (public_name neo4j-eio)
+ (enabled_if
+  (>= %{ocaml_version} "5.0"))
+ (libraries neo4j eio))
