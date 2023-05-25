@@ -1,8 +1,9 @@
+open Lwt.Syntax
+
 exception Unsupported_version of Neo4j.Protocol.version
 
 let handshake sock =
   print_endline "+Client: trying handshake...";
-  let open Lwt.Syntax in
   let send_data = Neo4j.Protocol.hello in
   let* _ = Lwt_unix.send sock send_data 0 (Bytes.length send_data) [] in
   Lwt_unix.shutdown sock Unix.SHUTDOWN_SEND;
@@ -15,17 +16,15 @@ let handshake sock =
 
 let connect ~sock ~addr =
   print_endline "+Client: connecting to server";
-  let open Lwt.Syntax in
   let* () = Lwt_unix.connect sock addr in
   let* version = handshake sock in
   print_endline (Printf.sprintf "+Version %d.%d" version.major version.minor);
+  print_endline "+Client: closing connection";
+  let* () = Lwt_unix.close sock in
   Lwt.return ()
 
 let () = Lwt_main.run begin
-  let open Lwt.Syntax in
   let sock = Lwt_unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
   let addr = Unix.ADDR_INET (Unix.inet_addr_of_string "127.0.0.1", 7687) in
-  let* () = connect ~sock ~addr in
-  let* () = Lwt_unix.close sock in
-  Lwt.return ()
+  connect ~sock ~addr
 end

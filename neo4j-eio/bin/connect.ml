@@ -23,7 +23,9 @@ let connect ~net ~addr =
   Switch.run @@ fun sw ->
   let flow = Eio.Net.connect ~sw net addr in
   let version = handshake flow in
-  traceln "Version %d.%d" version.major version.minor
+  traceln "Version %d.%d" version.major version.minor;
+  traceln "Client: closing connection";
+  Eio.Net.close flow
 
 let () =
   Eio_main.run @@ fun env ->
