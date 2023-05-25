@@ -7,9 +7,7 @@ exception Unsupported_version of Neo4j.Protocol.version
 
 let handshake flow ~id =
   traceln "conn(%d): trying handshake..." id;
-  Write.with_flow flow @@ fun to_server ->
-  Write.bytes to_server Neo4j.Protocol.hello;
-  Write.flush to_server;
+  Write.with_flow flow (fun to_server -> Write.bytes to_server Neo4j.Protocol.hello);
   Eio.Flow.shutdown flow `Send;
   let buffer = Buffer.create 32 in
   Eio.Flow.copy flow (Eio.Flow.buffer_sink buffer);
