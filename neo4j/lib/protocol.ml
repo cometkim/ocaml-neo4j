@@ -1,11 +1,14 @@
 type version = {
-  major: int;
-  minor: int;
+  major : int;
+  minor : int;
 }
 
 let hello =
   let header = Bytes.of_string "\x60\x60\xb0\x17" in
-  let versions = Bytes.of_string "\x00\x00\x00\x05\x00\x02\x04\x04\x00\x00\x00\x00\x00\x00\x00\x00" in
+  let versions =
+    Bytes.of_string
+      "\x00\x00\x00\x05\x00\x02\x04\x04\x00\x00\x00\x00\x00\x00\x00\x00"
+  in
   Bytes.cat header versions
 
 let parse_version bytes =

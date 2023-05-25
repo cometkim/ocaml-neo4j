@@ -1,5 +1,4 @@
 open Eio.Std
-
 module Read = Eio.Buf_read
 module Write = Eio.Buf_write
 
@@ -7,7 +6,8 @@ exception Unsupported_version of Neo4j.Protocol.version
 
 let handshake flow ~id =
   traceln "conn(%d): trying handshake..." id;
-  Write.with_flow flow (fun to_server -> Write.bytes to_server Neo4j.Protocol.hello);
+  Write.with_flow flow (fun to_server ->
+      Write.bytes to_server Neo4j.Protocol.hello);
   Eio.Flow.shutdown flow `Send;
   let buffer = Buffer.create 32 in
   Eio.Flow.copy flow (Eio.Flow.buffer_sink buffer);
@@ -31,6 +31,4 @@ let () =
   let addr = `Tcp (Eio.Net.Ipaddr.V4.loopback, 7687) in
   traceln "client: connect 100 times concurrently";
   Array.to_list (Array.init 100 (fun i -> i))
-  |> Fiber.List.iter (fun id -> 
-      connect ~id ~net ~addr
-  )
+  |> Fiber.List.iter (fun id -> connect ~id ~net ~addr)

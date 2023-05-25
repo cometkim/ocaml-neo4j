@@ -23,8 +23,8 @@ let connect ~sock ~addr =
   let* () = Lwt_unix.close sock in
   Lwt.return ()
 
-let () = Lwt_main.run begin
-  let sock = Lwt_unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
-  let addr = Unix.ADDR_INET (Unix.inet_addr_of_string "127.0.0.1", 7687) in
-  connect ~sock ~addr
-end
+let () =
+  Lwt_main.run
+    (let sock = Lwt_unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
+     let addr = Unix.ADDR_INET (Unix.inet_addr_of_string "127.0.0.1", 7687) in
+     connect ~sock ~addr)
